@@ -22,18 +22,13 @@ public class ItemListenerImpl extends ItemListener {
 
     @Override
     public void onUpdated(Item item) {
-        super.onUpdated(item);
-    }
-
-    @Override
-    public void onCreated(Item item) {
         if (item instanceof OrganizationFolder) {
             OrganizationFolder of = (OrganizationFolder)item;
             if (of.getNavigators().size()>0) {
                 SCMNavigator n = of.getNavigators().get(0);
                 if (n instanceof GitHubSCMNavigator) {
                     try {
-                        main.setup(of);
+                        main.apply(of, (GitHubSCMNavigator) n);
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "Failed to apply GitHub Org Folder theme",e);
                     }
