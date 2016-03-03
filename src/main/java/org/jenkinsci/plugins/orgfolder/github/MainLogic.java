@@ -4,8 +4,10 @@ import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.Extension;
 import jenkins.branch.OrganizationFolder;
 import jenkins.model.Jenkins;
+import jenkins.scm.api.SCMSourceOwner;
 import org.jenkinsci.plugins.github_branch_source.Connector;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMNavigator;
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 
@@ -21,13 +23,18 @@ public class MainLogic {
      * Applies UI customizations to a newly created {@link OrganizationFolder}
      * with a sole {@link GitHubSCMNavigator}
      */
-    public void apply(OrganizationFolder of, GitHubSCMNavigator n) throws IOException {
+    public void applyOrg(OrganizationFolder of, GitHubSCMNavigator n) throws IOException {
         GitHub hub = connect(of, n);
         GHUser u = hub.getUser(n.getRepoOwner());
         of.setIcon(new GitHubOrgIcon(n.getRepoOwner(),u.getAvatarUrl()));
     }
 
-    GitHub connect(OrganizationFolder of, GitHubSCMNavigator n) throws IOException {
+    public void applyRepo(WorkflowMultiBranchProject item, GitHubSCMNavigator n) throws IOException {
+        GitHub hub = connect(item, n);
+        item.setIcon(new GitHubRepoIcon());
+    }
+
+    GitHub connect(SCMSourceOwner of, GitHubSCMNavigator n) throws IOException {
         StandardCredentials credentials = Connector.lookupScanCredentials(of, n.getApiUri(), n.getScanCredentialsId());
         return Connector.connect(n.getApiUri(), credentials);
     }
@@ -37,4 +44,5 @@ public class MainLogic {
     }
 
     private static final Logger LOGGER = Logger.getLogger(MainLogic.class.getName());
+
 }

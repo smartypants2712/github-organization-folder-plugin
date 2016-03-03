@@ -3,8 +3,9 @@ package org.jenkinsci.plugins.orgfolder.github;
 import com.cloudbees.hudson.plugins.folder.FolderIcon;
 import com.cloudbees.hudson.plugins.folder.FolderIconDescriptor;
 import hudson.Extension;
-import jenkins.model.Jenkins;
+import hudson.model.Hudson;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.Stapler;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -34,7 +35,7 @@ public class GitHubOrgIcon extends FolderIcon {
     public String getImageOf(String s) {
         if (url==null) {
             // falll back to the generic github org icon
-            return Jenkins.getInstance().getRootUrl()+"plugins/github-organization-folder/images/"+s+".png";
+            return Stapler.getCurrentRequest().getContextPath()+ Hudson.RESOURCE_PATH+"/plugin/github-organization-folder/images/logo/"+s+".png";
         } else {
             String[] xy = s.split("x");
             if (xy.length==0)       return url;
