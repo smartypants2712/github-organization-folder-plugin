@@ -3,10 +3,8 @@ package org.jenkinsci.plugins.orgfolder.github;
 import hudson.Extension;
 import hudson.model.Item;
 import hudson.model.listeners.ItemListener;
-import jenkins.branch.OrganizationFolder;
-import jenkins.scm.api.SCMNavigator;
-import org.jenkinsci.plugins.github_branch_source.GitHubSCMNavigator;
-import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
+import org.jenkinsci.plugins.orgfolder.github.Sniffer.FolderMatch;
+import org.jenkinsci.plugins.orgfolder.github.Sniffer.RepoMatch;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -23,35 +21,27 @@ public class ItemListenerImpl extends ItemListener {
 
     @Override
     public void onUpdated(Item item) {
-        if (item instanceof OrganizationFolder) {
-            OrganizationFolder of = (OrganizationFolder)item;
-            if (of.getNavigators().size()>0) {
-                SCMNavigator n = of.getNavigators().get(0);
-                if (n instanceof GitHubSCMNavigator) {
-                    try {
-                        main.applyOrg(of, (GitHubSCMNavigator) n);
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Failed to apply GitHub Org Folder theme",e);
-                    }
-                }
-            }
-        }
+        maybeApply(item);
+    }
 
-        if (item instanceof WorkflowMultiBranchProject) {
-            WorkflowMultiBranchProject wfp = (WorkflowMultiBranchProject)item;
-            if (wfp.getParent() instanceof OrganizationFolder) {
-                OrganizationFolder of = (OrganizationFolder)wfp.getParent();
-                if (of.getNavigators().size()>0) {
-                    SCMNavigator n = of.getNavigators().get(0);
-                    if (n instanceof GitHubSCMNavigator) {
-                        try {
-                            main.applyRepo((WorkflowMultiBranchProject)item, (GitHubSCMNavigator) n);
-                        } catch (IOException e) {
-                            LOGGER.log(Level.WARNING, "Failed to apply GitHub Org Folder theme",e);
-                        }
-                    }
-                }
+    @Override
+    public void onCreated(Item item) {
+        maybeApply(item);
+    }
+
+    private void maybeApply(Item item) {
+        try {
+            FolderMatch f = Sniffer.matchFolder(item);
+            if (f!=null) {
+                main.applyOrg(f.folder, f.scm);
             }
+
+            RepoMatch r = Sniffer.matchRepo(item);
+            if (r!=null) {
+                main.applyRepo(r.repo, r.scm);
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to apply GitHub Org Folder theme to " + item.getFullName(), e);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.orgfolder.github;
 
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
+import hudson.BulkChange;
 import hudson.Extension;
 import jenkins.branch.OrganizationFolder;
 import jenkins.model.Jenkins;
@@ -26,12 +27,25 @@ public class MainLogic {
     public void applyOrg(OrganizationFolder of, GitHubSCMNavigator n) throws IOException {
         GitHub hub = connect(of, n);
         GHUser u = hub.getUser(n.getRepoOwner());
-        of.setIcon(new GitHubOrgIcon(n.getRepoOwner(),u.getAvatarUrl()));
+
+        BulkChange bc = new BulkChange(of);
+        try {
+            of.setIcon(new GitHubOrgIcon(n.getRepoOwner(),u.getAvatarUrl()));
+            bc.commit();
+        } finally {
+            bc.abort();
+        }
     }
 
     public void applyRepo(WorkflowMultiBranchProject item, GitHubSCMNavigator n) throws IOException {
-        GitHub hub = connect(item, n);
-        item.setIcon(new GitHubRepoIcon());
+//        GitHub hub = connect(item, n);
+        BulkChange bc = new BulkChange(item);
+        try {
+            item.setIcon(new GitHubRepoIcon());
+            bc.commit();
+        } finally {
+            bc.abort();
+        }
     }
 
     GitHub connect(SCMSourceOwner of, GitHubSCMNavigator n) throws IOException {
