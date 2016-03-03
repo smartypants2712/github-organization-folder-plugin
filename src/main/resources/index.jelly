@@ -1,0 +1,5 @@
+<?jelly escape-by-default='true'?>
+<div>
+  Scan entire GitHub organization for buildable repositories and branches.
+  See <a href="http://jenkins-ci.org/solutions/pipeline/">Pipeline as Code solution page</a> for more details.
+</div>
