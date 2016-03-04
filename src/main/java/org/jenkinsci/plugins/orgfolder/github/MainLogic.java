@@ -76,6 +76,7 @@ public class MainLogic {
             BulkChange bc = new BulkChange(item);
             try {
                 item.setIcon(new GitHubRepoIcon());
+                item.getProperties().replace(new GitHubRepoProperty(repo));
                 item.replaceAction(new GitHubLink("repo",repo.getHtmlUrl()));
                 bc.commit();
             } finally {
