@@ -70,6 +70,11 @@ public class CustomNameJobColumn extends JobColumn {
         public String getDisplayName() {
             return "Repository Name";
         }
+
+        @Override
+        public boolean shownByDefault() {
+            return false;
+        }
     }
 
     private static final Logger LOGGER = Logger.getLogger(CustomNameJobColumn.class.getName());
