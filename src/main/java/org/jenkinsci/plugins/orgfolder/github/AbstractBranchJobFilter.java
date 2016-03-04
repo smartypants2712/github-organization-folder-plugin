@@ -9,9 +9,11 @@ import org.jenkinsci.plugins.orgfolder.github.Sniffer.BranchMatch;
 import java.util.List;
 
 /**
+ * Base class for {@link ViewJobFilter}s to segregate PRs and normal branches.
+ *
  * @author Kohsuke Kawaguchi
  */
-public abstract class AbstractBranchJobFilter extends ViewJobFilter {
+abstract class AbstractBranchJobFilter extends ViewJobFilter {
     public AbstractBranchJobFilter() {}
 
     @Override

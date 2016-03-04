@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Hook to add decorations to GitHub organization folders.
+ *
  * @author Kohsuke Kawaguchi
  */
 @Extension

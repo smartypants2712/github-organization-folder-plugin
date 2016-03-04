@@ -3,10 +3,12 @@ package org.jenkinsci.plugins.orgfolder.github;
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.BulkChange;
 import hudson.Extension;
+import hudson.model.AbstractItem;
 import hudson.model.AllView;
 import hudson.model.Descriptor;
 import hudson.model.Item;
 import hudson.model.ListView;
+import hudson.model.listeners.ItemListener;
 import hudson.util.DescribableList;
 import hudson.views.JobColumn;
 import hudson.views.ListViewColumn;
@@ -32,13 +34,14 @@ import java.util.logging.Logger;
 import static java.util.Arrays.*;
 
 /**
+ * Main logic of UI customization.
+ *
  * @author Kohsuke Kawaguchi
  */
 @Extension
 public class MainLogic {
     /**
-     * Applies UI customizations to a newly created {@link OrganizationFolder}
-     * with a sole {@link GitHubSCMNavigator}
+     * Applies UI customizations to {@link OrganizationFolder} for GitHub
      */
     public void applyOrg(OrganizationFolder of, GitHubSCMNavigator scm) throws IOException {
         if (UPDATING.get().add(of)) {
@@ -75,6 +78,9 @@ public class MainLogic {
         }
     }
 
+    /**
+     * Applies UI customizations to a level below {@link OrganizationFolder}, which maps to a repository.
+     */
     public void applyRepo(WorkflowMultiBranchProject item, GitHubSCMNavigator scm) throws IOException {
         if (UPDATING.get().add(item)) {
             GitHub hub = connect(item, scm);
@@ -115,6 +121,9 @@ public class MainLogic {
         }
     }
 
+    /**
+     * Applies UI customizations to two levels below {@link OrganizationFolder}, which maps to a branch.
+     */
     public void applyBranch(WorkflowJob branch, WorkflowMultiBranchProject repo, GitHubSCMNavigator scm) throws IOException {
         if (UPDATING.get().add(branch)) {
             Branch b = repo.getProjectFactory().getBranch(branch);
@@ -141,10 +150,9 @@ public class MainLogic {
         return Jenkins.getActiveInstance().getInjector().getInstance(MainLogic.class);
     }
 
-    private static final Logger LOGGER = Logger.getLogger(MainLogic.class.getName());
-
     /**
-     * Keeps track of what we are updating to avoid recursion.
+     * Keeps track of what we are updating to avoid recursion, because {@link AbstractItem#save()}
+     * triggers {@link ItemListener}.
      */
     private final ThreadLocal<Set<Item>> UPDATING = new ThreadLocal<Set<Item>>() {
         @Override

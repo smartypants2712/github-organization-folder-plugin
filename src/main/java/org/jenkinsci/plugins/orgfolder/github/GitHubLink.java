@@ -10,7 +10,14 @@ import java.net.URL;
  * @author Kohsuke Kawaguchi
  */
 public class GitHubLink implements Action {
+    /**
+     * Maps to the directory name under webapp/images
+     */
     private final String image;
+
+    /**
+     * Target of the hyperlink to take the user to.
+     */
     private final String url;
 
     /*package*/ GitHubLink(String image, String url) {

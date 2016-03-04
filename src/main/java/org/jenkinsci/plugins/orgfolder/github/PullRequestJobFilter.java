@@ -8,6 +8,8 @@ import org.jenkinsci.plugins.github_branch_source.PullRequestSCMHead;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
+ * Show PRs excluding branch jobs.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class PullRequestJobFilter extends AbstractBranchJobFilter {

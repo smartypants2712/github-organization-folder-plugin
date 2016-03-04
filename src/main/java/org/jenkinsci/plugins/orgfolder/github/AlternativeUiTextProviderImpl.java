@@ -7,6 +7,8 @@ import hudson.model.AbstractItem;
 import hudson.util.AlternativeUiTextProvider;
 
 /**
+ * Overrides some text to the domain specific terms.
+ *
  * @author Kohsuke Kawaguchi
  */
 @Extension
