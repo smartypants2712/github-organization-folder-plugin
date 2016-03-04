@@ -41,7 +41,7 @@ public class GitHubOrgIcon extends FolderIcon {
 
     @Override
     public String getDescription() {
-        return folder.getName();
+        return folder!=null ? folder.getName() : "GitHub";
     }
 
     private String getAvatarUrl() {
