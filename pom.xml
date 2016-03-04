@@ -69,7 +69,7 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-multibranch</artifactId>
-      <version>1.14</version>
+      <version>1.15-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
