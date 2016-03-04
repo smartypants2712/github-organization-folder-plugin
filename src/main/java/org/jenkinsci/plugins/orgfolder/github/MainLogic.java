@@ -46,7 +46,7 @@ public class MainLogic {
                 of.setIcon(new GitHubOrgIcon(scm.getRepoOwner(),u.getAvatarUrl()));
                 of.replaceAction(new GitHubLink("logo",u.getHtmlUrl()));
                 of.setDisplayName(u.getName());
-                if (of.getView("Repositories")==null && of.getPrimaryView() instanceof AllView) {
+                if (of.getView("Repositories")==null && of.getView("All") instanceof AllView) {
                     // need to set the default view
                     ListView lv = new ListView("Repositories");
                     lv.getColumns().replaceBy(asList(
@@ -54,7 +54,9 @@ public class MainLogic {
                         new WeatherColumn(),
                         new CustomNameJobColumn(Messages.class,Messages._ListViewColumn_Repository())
                     ));
+                    lv.setIncludeRegex(".*");   // show all
                     of.addView(lv);
+                    of.deleteView(of.getView("All"));
                     of.setPrimaryView(lv);
                 }
 
