@@ -3,7 +3,11 @@ package org.jenkinsci.plugins.orgfolder.github;
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.BulkChange;
 import hudson.Extension;
+import hudson.model.AllView;
 import hudson.model.Item;
+import hudson.model.ListView;
+import hudson.views.StatusColumn;
+import hudson.views.WeatherColumn;
 import jenkins.branch.Branch;
 import jenkins.branch.OrganizationFolder;
 import jenkins.model.Jenkins;
@@ -20,6 +24,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static java.util.Arrays.*;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -40,6 +46,18 @@ public class MainLogic {
                 of.setIcon(new GitHubOrgIcon(scm.getRepoOwner(),u.getAvatarUrl()));
                 of.replaceAction(new GitHubLink("logo",u.getHtmlUrl()));
                 of.setDisplayName(u.getName());
+                if (of.getView("Repositories")==null && of.getPrimaryView() instanceof AllView) {
+                    // need to set the default view
+                    ListView lv = new ListView("Repositories");
+                    lv.getColumns().replaceBy(asList(
+                        new StatusColumn(),
+                        new WeatherColumn(),
+                        new CustomNameJobColumn(Messages.class,Messages._ListViewColumn_Repository())
+                    ));
+                    of.addView(lv);
+                    of.setPrimaryView(lv);
+                }
+
                 bc.commit();
             } finally {
                 bc.abort();
