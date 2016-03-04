@@ -9,7 +9,7 @@
     <version>2.3</version>
   </parent>
   <artifactId>github-organization-folder</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-beta-1-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <properties>
