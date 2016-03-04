@@ -8,6 +8,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.Stapler;
 
 /**
+ * {@link FolderIcon} that shows the github repository icon.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class GitHubRepoIcon extends FolderIcon {
