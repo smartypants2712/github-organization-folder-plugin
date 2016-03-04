@@ -49,7 +49,8 @@ public class MainLogic {
 
                 of.setIcon(new GitHubOrgIcon(scm.getRepoOwner(),u.getAvatarUrl()));
                 of.replaceAction(new GitHubLink("logo",u.getHtmlUrl()));
-                of.setDisplayName(u.getName());
+                if (of.getDisplayNameOrNull()==null)
+                    of.setDisplayName(u.getName());
                 if (of.getView("Repositories")==null && of.getView("All") instanceof AllView) {
                     // need to set the default view
                     ListView lv = new ListView("Repositories");
