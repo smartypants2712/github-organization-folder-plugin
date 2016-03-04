@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.orgfolder.github;
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.BulkChange;
 import hudson.Extension;
+import hudson.model.Item;
 import jenkins.branch.OrganizationFolder;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSourceOwner;
@@ -13,6 +14,8 @@ import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -25,26 +28,32 @@ public class MainLogic {
      * with a sole {@link GitHubSCMNavigator}
      */
     public void applyOrg(OrganizationFolder of, GitHubSCMNavigator n) throws IOException {
-        GitHub hub = connect(of, n);
-        GHUser u = hub.getUser(n.getRepoOwner());
+        if (UPDATING.get().add(of)) {
+            BulkChange bc = new BulkChange(of);
+            try {
+                GitHub hub = connect(of, n);
+                GHUser u = hub.getUser(n.getRepoOwner());
 
-        BulkChange bc = new BulkChange(of);
-        try {
-            of.setIcon(new GitHubOrgIcon(n.getRepoOwner(),u.getAvatarUrl()));
-            bc.commit();
-        } finally {
-            bc.abort();
+                of.setIcon(new GitHubOrgIcon(n.getRepoOwner(),u.getAvatarUrl()));
+                bc.commit();
+            } finally {
+                bc.abort();
+                UPDATING.get().remove(of);
+            }
         }
     }
 
     public void applyRepo(WorkflowMultiBranchProject item, GitHubSCMNavigator n) throws IOException {
+        if (UPDATING.get().add(item)) {
 //        GitHub hub = connect(item, n);
-        BulkChange bc = new BulkChange(item);
-        try {
-            item.setIcon(new GitHubRepoIcon());
-            bc.commit();
-        } finally {
-            bc.abort();
+            BulkChange bc = new BulkChange(item);
+            try {
+                item.setIcon(new GitHubRepoIcon());
+                bc.commit();
+            } finally {
+                bc.abort();
+                UPDATING.get().remove(item);
+            }
         }
     }
 
@@ -59,4 +68,13 @@ public class MainLogic {
 
     private static final Logger LOGGER = Logger.getLogger(MainLogic.class.getName());
 
+    /**
+     * Keeps track of what we are updating to avoid recursion.
+     */
+    private final ThreadLocal<Set<Item>> UPDATING = new ThreadLocal<Set<Item>>() {
+        @Override
+        protected Set<Item> initialValue() {
+            return new HashSet<>();
+        }
+    };
 }
