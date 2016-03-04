@@ -28,7 +28,7 @@ public class GitHubLink implements Action {
 
     @Override
     public String getIconFileName() {
-        return "/plugin/github-organization-folder/images/logo/"+ image +".png";
+        return "/plugin/github-organization-folder/images/"+ image +"/24x24.png";
     }
 
     @Override
