@@ -52,7 +52,8 @@ public class MainLogic {
                     lv.getColumns().replaceBy(asList(
                         new StatusColumn(),
                         new WeatherColumn(),
-                        new CustomNameJobColumn(Messages.class,Messages._ListViewColumn_Repository())
+                        new CustomNameJobColumn(Messages.class,Messages._ListViewColumn_Repository()),
+                        new RepositoryDescriptionColumn()
                     ));
                     lv.setIncludeRegex(".*");   // show all
                     of.addView(lv);

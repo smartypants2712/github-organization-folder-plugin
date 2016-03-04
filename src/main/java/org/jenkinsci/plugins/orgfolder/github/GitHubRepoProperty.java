@@ -59,7 +59,7 @@ public class GitHubRepoProperty extends AbstractFolderProperty<WorkflowMultiBran
     }
 
     @Extension
-    public class DescriptorImpl extends AbstractFolderPropertyDescriptor {
+    public static class DescriptorImpl extends AbstractFolderPropertyDescriptor {
         @Override
         public String getDisplayName() {
             return "GitHub Repository";
