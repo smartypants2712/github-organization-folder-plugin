@@ -68,7 +68,7 @@ public class CustomNameJobColumn extends JobColumn {
     public static class DescriptorImpl extends ListViewColumnDescriptor {
         @Override
         public String getDisplayName() {
-            return "Repository Name";
+            return "Job Name with Custom Title";
         }
 
         @Override
