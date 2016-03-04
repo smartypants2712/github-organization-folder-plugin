@@ -4,7 +4,7 @@ import hudson.Extension;
 import hudson.model.Item;
 import hudson.model.listeners.ItemListener;
 import org.jenkinsci.plugins.orgfolder.github.Sniffer.BranchMatch;
-import org.jenkinsci.plugins.orgfolder.github.Sniffer.FolderMatch;
+import org.jenkinsci.plugins.orgfolder.github.Sniffer.OrgMatch;
 import org.jenkinsci.plugins.orgfolder.github.Sniffer.RepoMatch;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class ItemListenerImpl extends ItemListener {
 
     private void maybeApply(Item item) {
         try {
-            FolderMatch f = Sniffer.matchFolder(item);
+            OrgMatch f = Sniffer.matchOrg(item);
             if (f!=null) {
                 main.applyOrg(f.folder, f.scm);
             }

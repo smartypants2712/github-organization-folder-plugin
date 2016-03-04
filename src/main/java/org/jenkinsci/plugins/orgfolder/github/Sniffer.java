@@ -13,33 +13,33 @@ import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
  * @author Kohsuke Kawaguchi
  */
 class Sniffer {
-    static class FolderMatch {
+    static class OrgMatch {
         final OrganizationFolder folder;
         final GitHubSCMNavigator scm;
 
-        public FolderMatch(OrganizationFolder folder, GitHubSCMNavigator scm) {
+        public OrgMatch(OrganizationFolder folder, GitHubSCMNavigator scm) {
             this.folder = folder;
             this.scm = scm;
         }
     }
 
-    public static FolderMatch matchFolder(Object item) {
+    public static OrgMatch matchOrg(Object item) {
         if (item instanceof OrganizationFolder) {
             OrganizationFolder of = (OrganizationFolder)item;
             if (of.getNavigators().size()>0) {
                 SCMNavigator n = of.getNavigators().get(0);
                 if (n instanceof GitHubSCMNavigator) {
-                    return new FolderMatch(of, (GitHubSCMNavigator) n);
+                    return new OrgMatch(of, (GitHubSCMNavigator) n);
                 }
             }
         }
         return null;
     }
 
-    static class RepoMatch extends FolderMatch {
+    static class RepoMatch extends OrgMatch {
         final WorkflowMultiBranchProject repo;
 
-        public RepoMatch(FolderMatch x, WorkflowMultiBranchProject repo) {
+        public RepoMatch(OrgMatch x, WorkflowMultiBranchProject repo) {
             super(x.folder,x.scm);
             this.repo = repo;
         }
@@ -48,7 +48,7 @@ class Sniffer {
     public static RepoMatch matchRepo(Object item) {
         if (item instanceof WorkflowMultiBranchProject) {
             WorkflowMultiBranchProject repo = (WorkflowMultiBranchProject)item;
-            FolderMatch org = matchFolder(repo.getParent());
+            OrgMatch org = matchOrg(repo.getParent());
             if (org!=null)
                 return new RepoMatch(org, repo);
         }
