@@ -27,7 +27,7 @@ public class AlternativeUiTextProviderImpl extends AlternativeUiTextProvider {
         if (text== FolderComputation.DISPLAY_NAME) {
             ComputedFolder<?> f = FolderComputation.DISPLAY_NAME.cast(context).getParent();
             if (Sniffer.matchOrg(f)!=null) {
-                return "Re-scan GitHub Org";
+                return "Re-scan Organization";
             }
         }
         return null;
