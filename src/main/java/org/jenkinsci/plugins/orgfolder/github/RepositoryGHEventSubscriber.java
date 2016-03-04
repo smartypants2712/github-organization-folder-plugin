@@ -43,6 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Sets.immutableEnumSet;
+import static java.util.logging.Level.*;
 import static org.kohsuke.github.GHEvent.REPOSITORY;
 
 /**
@@ -78,16 +79,16 @@ public class RepositoryGHEventSubscriber extends GHEventsSubscriber {
         String repoUrl = json.getJSONObject("repository").getString("html_url");
         boolean fork = json.getJSONObject("repository").getBoolean("fork");
 
-        LOGGER.log(Level.FINE, "Received REPOSITORY_EVENT for {0}", repoUrl);
+        LOGGER.log(FINE, "Received REPOSITORY_EVENT for {0}", repoUrl);
         Matcher matcher = REPOSITORY_NAME_PATTERN.matcher(repoUrl);
         if (matcher.matches()) {
             final GitHubRepositoryName repo = GitHubRepositoryName.create(repoUrl);
             if (repo == null) {
-                LOGGER.log(Level.WARNING, "Malformed repository URL {0}", repoUrl);
+                LOGGER.log(WARNING, "Malformed repository URL {0}", repoUrl);
                 return;
             }
             if (!fork) {
-                LOGGER.log(Level.FINE, "Repository {0} was created but it is empty, will be ignored", repo.getRepositoryName());
+                LOGGER.log(FINE, "Repository {0} was created but it is empty, will be ignored", repo.getRepositoryName());
                 return;
             }
             ACL.impersonate(ACL.SYSTEM, new Runnable() {
@@ -105,7 +106,7 @@ public class RepositoryGHEventSubscriber extends GHEventsSubscriber {
                 }
             });
         } else {
-            LOGGER.log(Level.WARNING, "Malformed repository URL {0}", repoUrl);
+            LOGGER.log(WARNING, "Malformed repository URL {0}", repoUrl);
         }
     }
 }
