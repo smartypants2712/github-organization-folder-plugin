@@ -22,6 +22,17 @@ To keep them DRY, various mechanisms will be provided to promote reuse of Pipeli
 [this](https://github.com/jenkinsci/workflow-plugin/blob/master/cps-global-lib/README.md).
 
 
+# Hook configuration
+For Jenkins to be able to trigger a new build whenever a new commit / pull request occurs, Jenkins
+needs to receive a webhook from GitHub.
+
+If the credentials you provided to GitHub Organization Folder allows you to install an organization hook,
+this plugin will register a hook by itself. Otherwise you can also manually register a hook
+to `$JENKINS_URL/github-webhook/`. 'Push', 'Pull Request' and 'Repository' event type should be selected
+for the best result.
+
+
+
 # Implementation
 Much of the GitHub organization folder capability are split into three separate plugins.
 Those are `branch-api`, `github-branch-source`, and `workflow-multibranch`. This plugin
