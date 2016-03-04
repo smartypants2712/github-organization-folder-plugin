@@ -4,8 +4,12 @@ import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.BulkChange;
 import hudson.Extension;
 import hudson.model.AllView;
+import hudson.model.Descriptor;
 import hudson.model.Item;
 import hudson.model.ListView;
+import hudson.util.DescribableList;
+import hudson.views.JobColumn;
+import hudson.views.ListViewColumn;
 import hudson.views.StatusColumn;
 import hudson.views.WeatherColumn;
 import jenkins.branch.Branch;
@@ -79,6 +83,28 @@ public class MainLogic {
                 item.setIcon(new GitHubRepoIcon());
                 item.getProperties().replace(new GitHubRepoProperty(repo));
                 item.replaceAction(new GitHubLink("repo",repo.getHtmlUrl()));
+                if (item.getView("Branches")==null && item.getView("All") instanceof AllView) {
+                    // create initial views
+                    ListView bv = new ListView("Branches");
+                    DescribableList<ListViewColumn, Descriptor<ListViewColumn>> cols = bv.getColumns();
+                    JobColumn name = cols.get(JobColumn.class);
+                    if (name!=null)
+                        cols.replace(name,new CustomNameJobColumn(Messages.class, Messages._ListViewColumn_Branch()));
+                    bv.getJobFilters().add(new BranchJobFilter());
+
+                    ListView pv = new ListView("Pull Requests");
+                    cols = pv.getColumns();
+                    name = cols.get(JobColumn.class);
+                    if (name!=null)
+                        cols.replace(name,new CustomNameJobColumn(Messages.class, Messages._ListViewColumn_PullRequest()));
+                    bv.getJobFilters().add(new PullRequestJobFilter());
+
+                    item.addView(bv);
+                    item.addView(pv);
+                    item.deleteView(item.getView("All"));
+                    item.setPrimaryView(bv);
+                }
+
                 bc.commit();
             } finally {
                 bc.abort();
