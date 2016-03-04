@@ -51,7 +51,7 @@
   </pluginRepositories>
 
   <dependencies>
-    <dependency><!-- needs a very latest that fixes a bug -->
+    <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>cloudbees-folder</artifactId>
       <version>5.3</version>
