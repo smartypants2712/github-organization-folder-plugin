@@ -4,12 +4,15 @@ import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.BulkChange;
 import hudson.Extension;
 import hudson.model.Item;
+import jenkins.branch.Branch;
 import jenkins.branch.OrganizationFolder;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSourceOwner;
 import org.jenkinsci.plugins.github_branch_source.Connector;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMNavigator;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
+import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 
@@ -27,14 +30,16 @@ public class MainLogic {
      * Applies UI customizations to a newly created {@link OrganizationFolder}
      * with a sole {@link GitHubSCMNavigator}
      */
-    public void applyOrg(OrganizationFolder of, GitHubSCMNavigator n) throws IOException {
+    public void applyOrg(OrganizationFolder of, GitHubSCMNavigator scm) throws IOException {
         if (UPDATING.get().add(of)) {
             BulkChange bc = new BulkChange(of);
             try {
-                GitHub hub = connect(of, n);
-                GHUser u = hub.getUser(n.getRepoOwner());
+                GitHub hub = connect(of, scm);
+                GHUser u = hub.getUser(scm.getRepoOwner());
 
-                of.setIcon(new GitHubOrgIcon(n.getRepoOwner(),u.getAvatarUrl()));
+                of.setIcon(new GitHubOrgIcon(scm.getRepoOwner(),u.getAvatarUrl()));
+                of.replaceAction(new GitHubLink("logo",u.getHtmlUrl()));
+                of.setDisplayName(u.getName());
                 bc.commit();
             } finally {
                 bc.abort();
@@ -43,16 +48,36 @@ public class MainLogic {
         }
     }
 
-    public void applyRepo(WorkflowMultiBranchProject item, GitHubSCMNavigator n) throws IOException {
+    public void applyRepo(WorkflowMultiBranchProject item, GitHubSCMNavigator scm) throws IOException {
         if (UPDATING.get().add(item)) {
-//        GitHub hub = connect(item, n);
+            GitHub hub = connect(item, scm);
+            GHRepository repo = hub.getRepository(scm.getRepoOwner() + '/' + item.getName());
+
             BulkChange bc = new BulkChange(item);
             try {
                 item.setIcon(new GitHubRepoIcon());
+                item.replaceAction(new GitHubLink("repo",repo.getHtmlUrl()));
                 bc.commit();
             } finally {
                 bc.abort();
                 UPDATING.get().remove(item);
+            }
+        }
+    }
+
+    public void applyBranch(WorkflowJob branch, WorkflowMultiBranchProject repo, GitHubSCMNavigator scm) throws IOException {
+        if (UPDATING.get().add(branch)) {
+            Branch b = repo.getProjectFactory().getBranch(branch);
+            GitHubLink repoLink = repo.getAction(GitHubLink.class);
+            if (repoLink!=null) {
+                BulkChange bc = new BulkChange(branch);
+                try {
+                    branch.replaceAction(new GitHubLink("branch",repoLink.getUrl()+"/tree/"+b.getName()));
+                    bc.commit();
+                } finally {
+                    bc.abort();
+                    UPDATING.get().remove(branch);
+                }
             }
         }
     }
@@ -63,7 +88,7 @@ public class MainLogic {
     }
 
     public static MainLogic get() {
-        return Jenkins.getInstance().getInjector().getInstance(MainLogic.class);
+        return Jenkins.getActiveInstance().getInjector().getInstance(MainLogic.class);
     }
 
     private static final Logger LOGGER = Logger.getLogger(MainLogic.class.getName());
