@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.orgfolder.github;
 
+import com.cloudbees.hudson.plugins.folder.AbstractFolder;
 import com.cloudbees.hudson.plugins.folder.FolderIcon;
 import com.cloudbees.hudson.plugins.folder.FolderIconDescriptor;
 import hudson.Extension;
@@ -8,31 +9,25 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.Stapler;
 
 /**
+ * Shows Avatar icon from GitHub organization/user.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class GitHubOrgIcon extends FolderIcon {
-    /**
-     * ID of the GitHub organization
-     */
-    private final String org;
-
-    /**
-     * Once resolved, URL of the avatar.
-     */
-    private String url;
+    private AbstractFolder<?> folder;
 
     @DataBoundConstructor
-    public GitHubOrgIcon(String org) {
-        this.org = org;
+    public GitHubOrgIcon() {
     }
 
-    public GitHubOrgIcon(String org, String url) {
-        this.org = org;
-        this.url = url;
+    @Override
+    protected void setOwner(AbstractFolder<?> folder) {
+        this.folder = folder;
     }
 
     @Override
     public String getImageOf(String s) {
+        String url = getAvatarUrl();
         if (url==null) {
             // falll back to the generic github org icon
             return Stapler.getCurrentRequest().getContextPath()+ Hudson.RESOURCE_PATH+"/plugin/github-organization-folder/images/logo/"+s+".png";
@@ -46,7 +41,14 @@ public class GitHubOrgIcon extends FolderIcon {
 
     @Override
     public String getDescription() {
-        return org;
+        return folder.getName();
+    }
+
+    private String getAvatarUrl() {
+        if (folder==null)   return null;
+        GitHubOrgProperty p = folder.getProperties().get(GitHubOrgProperty.class);
+        if (p==null)    return null;
+        return p.getAvatar();
     }
 
     @Extension

@@ -47,7 +47,8 @@ public class MainLogic {
                 GitHub hub = connect(of, scm);
                 GHUser u = hub.getUser(scm.getRepoOwner());
 
-                of.setIcon(new GitHubOrgIcon(scm.getRepoOwner(),u.getAvatarUrl()));
+                of.setIcon(new GitHubOrgIcon());
+                of.getProperties().replace(new GitHubOrgProperty(u));
                 of.replaceAction(new GitHubLink("logo",u.getHtmlUrl()));
                 if (of.getDisplayNameOrNull()==null)
                     of.setDisplayName(u.getName());
