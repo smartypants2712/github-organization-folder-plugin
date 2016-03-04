@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.orgfolder.github;
 
 import hudson.model.Item;
+import jenkins.branch.Branch;
 import jenkins.branch.OrganizationFolder;
 import jenkins.scm.api.SCMNavigator;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMNavigator;
@@ -61,6 +62,10 @@ class Sniffer {
         public BranchMatch(RepoMatch x, WorkflowJob branch) {
             super(x,x.repo);
             this.branch = branch;
+        }
+
+        public Branch getScmBranch() {
+            return repo.getProjectFactory().getBranch(branch);
         }
     }
 
