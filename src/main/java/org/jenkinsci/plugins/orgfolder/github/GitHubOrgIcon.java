@@ -46,7 +46,7 @@ public class GitHubOrgIcon extends FolderIcon {
 
     private String getAvatarUrl() {
         if (folder==null)   return null;
-        GitHubOrgProperty p = folder.getProperties().get(GitHubOrgProperty.class);
+        GitHubOrgAction p = folder.getAction(GitHubOrgAction.class);
         if (p==null)    return null;
         return p.getAvatar();
     }

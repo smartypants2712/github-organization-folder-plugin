@@ -17,10 +17,10 @@ public class RepositoryDescriptionColumn extends ListViewColumn {
     public RepositoryDescriptionColumn() {
     }
 
-    public GitHubRepoProperty getPropertyOf(Item item) {
+    public GitHubRepoAction getPropertyOf(Item item) {
         if (item instanceof WorkflowMultiBranchProject) {
             WorkflowMultiBranchProject job = (WorkflowMultiBranchProject) item;
-            return job.getProperties().get(GitHubRepoProperty.class);
+            return job.getAction(GitHubRepoAction.class);
         }
         return null;
     }

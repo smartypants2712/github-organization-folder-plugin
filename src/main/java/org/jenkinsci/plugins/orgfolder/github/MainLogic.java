@@ -59,7 +59,7 @@ public class MainLogic {
                 GHUser u = hub.getUser(scm.getRepoOwner());
 
                 of.setIcon(new GitHubOrgIcon());
-                of.getProperties().replace(new GitHubOrgProperty(u));
+                of.replaceAction(new GitHubOrgAction(u));
                 of.replaceAction(new GitHubLink("logo",u.getHtmlUrl()));
                 if (of.getDisplayNameOrNull()==null)
                     of.setDisplayName(u.getName());
@@ -116,7 +116,7 @@ public class MainLogic {
             BulkChange bc = new BulkChange(item);
             try {
                 item.setIcon(new GitHubRepoIcon());
-                item.getProperties().replace(new GitHubRepoProperty(repo));
+                item.replaceAction(new GitHubRepoAction(repo));
                 item.replaceAction(new GitHubLink("repo",repo.getHtmlUrl()));
                 if (item.getView("Branches")==null && item.getView("All") instanceof AllView) {
                     // create initial views
