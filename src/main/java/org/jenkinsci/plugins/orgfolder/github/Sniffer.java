@@ -1,9 +1,12 @@
 package org.jenkinsci.plugins.orgfolder.github;
 
 import hudson.model.Item;
+import hudson.util.DescribableList;
+import java.util.List;
 import jenkins.branch.Branch;
 import jenkins.branch.OrganizationFolder;
 import jenkins.scm.api.SCMNavigator;
+import jenkins.scm.api.SCMNavigatorDescriptor;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMNavigator;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
@@ -27,8 +30,9 @@ class Sniffer {
     public static OrgMatch matchOrg(Object item) {
         if (item instanceof OrganizationFolder) {
             OrganizationFolder of = (OrganizationFolder)item;
-            if (of.getNavigators().size()>0) {
-                SCMNavigator n = of.getNavigators().get(0);
+            List<SCMNavigator> navigators = of.getNavigators();
+            if (/* could be called from constructor */navigators != null && navigators.size() > 0) {
+                SCMNavigator n = navigators.get(0);
                 if (n instanceof GitHubSCMNavigator) {
                     return new OrgMatch(of, (GitHubSCMNavigator) n);
                 }
