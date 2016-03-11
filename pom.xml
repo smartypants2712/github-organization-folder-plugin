@@ -69,6 +69,12 @@
       <artifactId>workflow-multibranch</artifactId>
       <version>1.15</version>
     </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-aggregator</artifactId>
+      <version>1.15</version>
+      <scope>test</scope> <!-- TODO or do we want this as a runtime dep? -->
+    </dependency>
   </dependencies>
 
 </project>
