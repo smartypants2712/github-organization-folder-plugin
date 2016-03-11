@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.Arrays.*;
+import org.jenkinsci.plugins.github_branch_source.RateLimitExceededException;
 
 /**
  * Main logic of UI customization.
@@ -94,6 +95,9 @@ public class MainLogic {
                         orghook.on();
                     } catch (FileNotFoundException e) {
                         LOGGER.log(Level.WARNING, "Failed to register GitHub Org hook to {0} (missing permissions?): {1}", new Object[] {u.getHtmlUrl(), e.getMessage()});
+                        LOGGER.log(Level.FINE, null, e);
+                    } catch (RateLimitExceededException e) {
+                        LOGGER.log(Level.WARNING, "Failed to register GitHub Org hook to {0}: {1}", new Object[] {u.getHtmlUrl(), e.getMessage()});
                         LOGGER.log(Level.FINE, null, e);
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "Failed to register GitHub Org hook to "+u.getHtmlUrl(), e);
