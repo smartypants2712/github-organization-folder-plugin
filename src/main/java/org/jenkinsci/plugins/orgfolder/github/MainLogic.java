@@ -31,6 +31,7 @@ import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -91,6 +92,9 @@ public class MainLogic {
                         // if the user doesn't have the proper permission, this will cause
                         // a repeated failure, but this code doesn't execute too often.
                         orghook.on();
+                    } catch (FileNotFoundException e) {
+                        LOGGER.log(Level.WARNING, "Failed to register GitHub Org hook to {0} (missing permissions?): {1}", new Object[] {u.getHtmlUrl(), e.getMessage()});
+                        LOGGER.log(Level.FINE, null, e);
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "Failed to register GitHub Org hook to "+u.getHtmlUrl(), e);
                     }
