@@ -140,7 +140,7 @@ public class MainLogic {
                     name = cols.get(JobColumn.class);
                     if (name!=null)
                         cols.replace(name,new CustomNameJobColumn(Messages.class, Messages._ListViewColumn_PullRequest()));
-                    bv.getJobFilters().add(new PullRequestJobFilter());
+                    pv.getJobFilters().add(new PullRequestJobFilter());
 
                     item.addView(bv);
                     item.addView(pv);
