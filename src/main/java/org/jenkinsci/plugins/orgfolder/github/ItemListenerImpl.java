@@ -8,6 +8,8 @@ import org.jenkinsci.plugins.orgfolder.github.Sniffer.OrgMatch;
 import org.jenkinsci.plugins.orgfolder.github.Sniffer.RepoMatch;
 
 import javax.inject.Inject;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +50,9 @@ public class ItemListenerImpl extends ItemListener {
             if (b!=null) {
                 main.applyBranch(b.branch, b.repo, b.scm);
             }
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.FINE, "Failed to apply GitHub Org Folder theme to " + item.getFullName() + 
+                    " because the Org does not exists or it's not accesible", e);
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to apply GitHub Org Folder theme to " + item.getFullName(), e);
         }
