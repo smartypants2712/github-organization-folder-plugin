@@ -1,5 +1,7 @@
 target
 work
+.idea
 .project
 .settings
 .classpath
+github-organization-folder.iml
