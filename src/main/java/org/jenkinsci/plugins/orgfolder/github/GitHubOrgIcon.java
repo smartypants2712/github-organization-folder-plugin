@@ -29,7 +29,7 @@ public class GitHubOrgIcon extends FolderIcon {
     public String getImageOf(String s) {
         String url = getAvatarUrl();
         if (url==null) {
-            // falll back to the generic github org icon
+            // fall back to the generic github org icon
             return Stapler.getCurrentRequest().getContextPath()+ Hudson.RESOURCE_PATH+"/plugin/github-organization-folder/images/logo/"+s+".png";
         } else {
             String[] xy = s.split("x");

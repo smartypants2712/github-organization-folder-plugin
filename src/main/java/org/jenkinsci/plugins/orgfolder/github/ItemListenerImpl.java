@@ -52,7 +52,7 @@ public class ItemListenerImpl extends ItemListener {
             }
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.FINE, "Failed to apply GitHub Org Folder theme to " + item.getFullName() + 
-                    " because the Org does not exists or it's not accesible", e);
+                    " because the Org does not exists or it's not accessible", e);
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Failed to apply GitHub Org Folder theme to " + item.getFullName(), e);
         }
