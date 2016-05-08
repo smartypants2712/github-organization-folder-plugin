@@ -20,7 +20,7 @@ public class PullRequestJobFilter extends AbstractBranchJobFilter {
 
     @Override
     protected boolean shouldShow(SCMHead head, View filteringView) {
-        return head instanceof PullRequestSCMHead && filteringView.getViewName().equals("PRs");
+        return head instanceof PullRequestSCMHead && filteringView.getViewName().equals("Pull Requests");
     }
 
     @Extension
