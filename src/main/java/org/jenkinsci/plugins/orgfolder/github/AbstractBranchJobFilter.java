@@ -24,13 +24,13 @@ abstract class AbstractBranchJobFilter extends ViewJobFilter {
             BranchMatch b = Sniffer.matchBranch(i);
             if (b!=null) {
                 SCMHead head = b.getScmBranch().getHead();
-                if (shouldShow(head))
+                if (shouldShow(head, filteringView))
                     added.add(i);
             }
         }
         return added;
     }
 
-    protected abstract boolean shouldShow(SCMHead head);
+    protected abstract boolean shouldShow(SCMHead head, View filteringView);
 }
 

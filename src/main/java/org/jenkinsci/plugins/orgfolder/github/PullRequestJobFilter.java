@@ -6,6 +6,8 @@ import hudson.views.ViewJobFilter;
 import jenkins.scm.api.SCMHead;
 import org.jenkinsci.plugins.github_branch_source.PullRequestSCMHead;
 import org.kohsuke.stapler.DataBoundConstructor;
+import hudson.model.View;
+
 
 /**
  * Show PRs excluding branch jobs.
@@ -17,8 +19,8 @@ public class PullRequestJobFilter extends AbstractBranchJobFilter {
     public PullRequestJobFilter() {}
 
     @Override
-    protected boolean shouldShow(SCMHead head) {
-        return head instanceof PullRequestSCMHead;
+    protected boolean shouldShow(SCMHead head, View filteringView) {
+        return head instanceof PullRequestSCMHead && filteringView.getViewName().equals("PRs");
     }
 
     @Extension
@@ -28,5 +30,4 @@ public class PullRequestJobFilter extends AbstractBranchJobFilter {
             return "GitHub Pull Request Jobs Only";
         }
     }
-
 }
