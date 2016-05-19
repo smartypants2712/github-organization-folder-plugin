@@ -145,7 +145,7 @@ public class MainLogic {
                     item.addView(bv);
                     item.addView(pv);
                     item.deleteView(item.getView("All"));
-                    item.setPrimaryView(bv);
+                    item.setPrimaryView(pv);
                 }
 
                 bc.commit();
